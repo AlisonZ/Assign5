@@ -1,46 +1,40 @@
-package com.company;
+
 
 public class BST {
 
 	private TreeNode root; //overall root
-	private int size;
 
 	public BST() {
 		this.root = null;
 	}
 
-	public void insert(String key, String value) {
+	public void insert(int key, String value) {
 		root = insert(root, key, value);
-		size+=1;
 	}
 
-	private TreeNode insert(TreeNode root, String key, String value) {
+	private TreeNode insert(TreeNode root, int key, String value) {
 		if(root == null)
 			root = new TreeNode(key, value);
-
-		else if(root.key.compareTo(key) > 0)
+		else if(key < root.key)
 			root.left = insert(root.left, key, value);
-		else if(root.key.compareTo(key) < 0)
+		else if(key > root.key)
 			root.right = insert(root.right, key, value);
-		else if(root.key.compareTo(key) == 0)
-			root.key = key;
+		else //if key == root.key, update operation
+			root.value = value;
 
 		return root;
 	}
 
-	public void remove (String key) {
+	public void remove (int key) {
 		root = remove(root, key);
 	}
 
-	private TreeNode remove(TreeNode root, String key) {
+	private TreeNode remove(TreeNode root, int key) {
 		if(root == null)
 			return null;
-//		else if (key < root.key)
-			//TODO: check that this the correct ordering of compareTo()
-		else if (root.key.compareTo(key) < 0)
+		else if (key < root.key)
 			root.left =remove (root.left, key);
-//		else if (key > root.key)
-		else if (root.key.compareTo(key) > 0)
+		else if (key > root.key)
 			root.right =remove(root.right, key);
 		else { //key == root.key, we remove key-value pair
 			if(root.right == null)
@@ -48,21 +42,21 @@ public class BST {
 			else if (root.left == null)
 				return root.right;
 			else { //a parent with two children, assume that we find the min of right subtree
-				//TODO: check that this string value of is working as expected
 				root.key = getMin(root.right);
 				root.value = search(root.right, root.key);
 				root.right = remove(root.right, root.key);
+
 			}
 		}
 		return root;
 	}
 
 
-	public String getMin() {
+	public int getMin() {
 		return getMin(root);
 	}
 
-	private String getMin(TreeNode root) {
+	private int getMin(TreeNode root) {
 		if(root != null) {
 			if(root.left == null)
 				return root.key;
@@ -70,15 +64,15 @@ public class BST {
 				return getMin(root.left);
 		}
 
-		return "NOT FOUND";
+		return -1;
 	}
 
 
-	public String getMax() {
+	public int getMax() {
 		return getMax(root);
 	}
 
-	private String getMax(TreeNode root) {
+	private int getMax(TreeNode root) {
 		if(root != null) {
 			if(root.right == null)
 				return root.key;
@@ -86,20 +80,20 @@ public class BST {
 				return getMax(root.right);
 		}
 
-		return "NOT FOUND";
+		return -1;
 	}
 
 
-	public String search(String key) {
+	public String search(int key) {
 		return search(root, key); //root => overall root
 	}
 
-	private String search(TreeNode root, String key) {
+	private String search(TreeNode root, int key) { //root-> root of the subtree
 		if(root == null)  //key is not found
-			return "NOT FOUND";
-		else if (root.key.compareTo(key) < 0)
+			return null;
+		else if (key < root.key)  //key is on the left branch
 			return search(root.left, key);
-		else if (root.key.compareTo(key) > 0)
+		else if (key > root.key)		//key is on the right branch
 			return search(root.right, key);
 
 		return root.value; 	//key == root.key, key is found
@@ -130,6 +124,7 @@ public class BST {
 			printPreOrder(root.right);
 		}
 	}
+
 
 	public void printPostOrder() {
 		printPostOrder(root);
@@ -175,12 +170,12 @@ public class BST {
 
 	//inner class for a tree node
 	private class TreeNode{
-		public String key;
+		public int key;
 		public String value;
 		public TreeNode left;
 		public TreeNode right;
 
-		public TreeNode(String key, String value) {
+		public TreeNode(int key, String value) {
 			this.key = key;
 			this.value = value;
 			this.left = null;
@@ -188,7 +183,4 @@ public class BST {
 		}
 	}
 
-	public int getSize() {
-		return size;
-	}
 }
